@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-deep-950: #07070d;
+  --color-deep-900: #0a0a12;
+  --color-deep-800: #0e0e1a;
+  --color-deep-700: #14142a;
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-cyan-neon: #06b6d4;
+  --color-surface: #12122a;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+@layer base {
+  * { @apply border-white/5; }
+  body {
+    @apply bg-deep-950 text-zinc-300 antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+@utility text-glow {
+  text-shadow: 0 0 20px var(--color-cyan-neon), 0 0 60px color-mix(in srgb, var(--color-cyan-neon) 30%, transparent);
+}
+
+@utility glow {
+  box-shadow: 0 0 20px var(--color-accent), 0 0 60px color-mix(in srgb, var(--color-accent) 20%, transparent);
+}
