@@ -1,85 +1,129 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 
 const layers = [
-  { label: "Kernel", sub: "Custom Linux 6.8.1 with AI scheduler patches", color: "from-violet-500 to-violet-700" },
-  { label: "Aura Compositor", sub: "KMS/DRM + Wayland server + wgpu renderer", color: "from-indigo-500 to-indigo-700" },
-  { label: "Intent Routing", sub: "NLP core → entity extraction → LLM routing", color: "from-blue-500 to-blue-700" },
-  { label: "Microservices", sub: "File, Process, Network, Hardware, Package, Schedule…", color: "from-cyan-500 to-cyan-700" },
-  { label: "User Interface", sub: "Aura overlay UI + WebUI (port 8080)", color: "from-teal-500 to-teal-700" },
-]
-
-const connections = [
-  { from: 0, to: 1 },
-  { from: 1, to: 2 },
-  { from: 2, to: 3 },
-  { from: 3, to: 4 },
+  {
+    name: "User Space",
+    color: "from-violet-500/20 to-violet-500/5",
+    border: "border-violet-500/30",
+    accent: "text-violet-400",
+    items: [
+      { label: "Terminal", desc: "CLI with NLP intent routing in Turkish/English" },
+      { label: "WebUI", desc: "Browser-based dashboard on port 8080" },
+      { label: "Apps", desc: "Wayland-native applications" },
+    ],
+  },
+  {
+    name: "Core Services",
+    color: "from-accent/20 to-accent/5",
+    border: "border-accent/30",
+    accent: "text-accent",
+    items: [
+      { label: "Samantha Intent", desc: "NLP router — parses natural language and dispatches to services" },
+      { label: "Service Manager", desc: "systemd unit lifecycle with health checks" },
+      { label: "Package Manager", desc: "pacman-based with AI-assisted installs" },
+    ],
+  },
+  {
+    name: "Aura Compositor",
+    color: "from-cyan-500/20 to-cyan-500/5",
+    border: "border-cyan-500/30",
+    accent: "text-cyan-400",
+    items: [
+      { label: "Wayland Compositor", desc: "Full wl_seat, wl_output v4, wl_data_device_manager support" },
+      { label: "KMS/DRM", desc: "Direct kernel mode-setting, llvmpipe Vulkan render" },
+      { label: "Input Pipeline", desc: "EVDEV event loop with shift/ctrl tracking, EV_SYN passthrough" },
+    ],
+  },
+  {
+    name: "Kernel",
+    color: "from-emerald-500/20 to-emerald-500/5",
+    border: "border-emerald-500/30",
+    accent: "text-emerald-400",
+    items: [
+      { label: "Linux 6.8", desc: "Custom kernel build with Wayland and KVM modules" },
+      { label: "Drivers", desc: "virtio, e1000, bochs-drm for QEMU compatibility" },
+    ],
+  },
 ]
 
 export default function Architecture() {
+  const [activeLayer, setActiveLayer] = useState<number | null>(null)
+
   return (
-    <section className="relative border-t border-white/5 py-24">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+    <section className="relative border-t border-white/5 py-24" id="architecture">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
         >
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">Architecture</h2>
-          <p className="mx-auto mt-4 max-w-xl text-zinc-400">
-            Clean layered design from kernel to UI. Each layer is replaceable.
+          <h2 className="text-center text-3xl font-bold text-white sm:text-4xl">
+            Architecture
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-center text-zinc-400">
+            Click a layer to expand details.
           </p>
         </motion.div>
 
-        <div className="relative">
-          <svg className="absolute inset-0 h-full w-full" style={{ zIndex: 0 }}>
-            {connections.map((c) => {
-              const y1 = c.from * 88 + 44
-              const y2 = c.to * 88 + 44
-              return (
-                <line
-                  key={`${c.from}-${c.to}`}
-                  x1="50%"
-                  y1={y1}
-                  x2="50%"
-                  y2={y2}
-                  stroke="url(#archGrad)"
-                  strokeWidth="1"
-                  strokeDasharray="4 4"
-                  opacity="0.3"
-                />
-              )
-            })}
-            <defs>
-              <linearGradient id="archGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6366f1" />
-                <stop offset="100%" stopColor="#06b6d4" />
-              </linearGradient>
-            </defs>
-          </svg>
+        <div className="relative mt-16">
+          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-gradient-to-b from-violet-500/20 via-accent to-emerald-500/20 max-md:hidden" />
 
-          <div className="relative z-10 flex flex-col items-center gap-6">
-            {layers.map((l, i) => (
-              <motion.div
-                key={l.label}
-                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="w-full max-w-lg"
+          {layers.map((layer, i) => (
+            <div key={layer.name} className="relative z-10 mb-6 last:mb-0">
+              <button
+                onClick={() => setActiveLayer(activeLayer === i ? null : i)}
+                className={`group relative flex w-full items-center gap-4 rounded-xl border px-5 py-4 text-left transition-all ${
+                  activeLayer === i
+                    ? `${layer.border} ${layer.color}`
+                    : "border-white/5 bg-white/[0.02] hover:bg-white/[0.04]"
+                }`}
               >
-                <div className={`rounded-xl bg-gradient-to-r ${l.color} p-0.5`}>
-                  <div className="rounded-[10px] bg-deep-900 px-6 py-4">
-                    <div className="text-sm font-semibold text-white">{l.label}</div>
-                    <div className="mt-0.5 text-xs text-white/60">{l.sub}</div>
-                  </div>
+                <div className={`hidden h-3 w-3 rounded-full md:block ${layer.accent}`} />
+                <div className="flex-1">
+                  <span className={`text-sm font-semibold ${layer.accent}`}>{layer.name}</span>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+                <svg
+                  className={`h-4 w-4 text-zinc-600 transition-transform ${
+                    activeLayer === i ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <AnimatePresence>
+                {activeLayer === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid gap-3 p-4 sm:grid-cols-3">
+                      {layer.items.map((item) => (
+                        <div
+                          key={item.label}
+                          className="rounded-lg border border-white/5 bg-white/[0.02] p-3"
+                        >
+                          <div className="text-sm font-medium text-zinc-200">{item.label}</div>
+                          <div className="mt-1 text-xs text-zinc-500">{item.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
         </div>
       </div>
     </section>
