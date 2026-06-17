@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "Inferra — AI-native Operating System",
     description:
       "A ground-up AI-native operating system. Open-source, Wayland-native, intelligent intent-routing core.",
-    url: "https://inferra.work",
+    url: "https://inferra.live",
     siteName: "Inferra",
     locale: "en_US",
     type: "website",
