@@ -34,6 +34,7 @@ export default function CliDemo() {
   const [visibleCount, setVisibleCount] = useState(0)
   const [isTyping, setIsTyping] = useState(false)
   const [typedText, setTypedText] = useState("")
+  const containerRef = useRef<HTMLDivElement>(null!)
   const bottomRef = useRef<HTMLDivElement>(null!)
 
   useEffect(() => {
@@ -62,7 +63,9 @@ export default function CliDemo() {
   }, [visibleCount])
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    if (containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight
+    }
   }, [visibleCount])
 
   const handleReset = () => {
@@ -126,7 +129,7 @@ export default function CliDemo() {
                 ↻ replay
               </motion.button>
             </div>
-            <div className="h-80 overflow-y-auto p-4 font-mono text-sm leading-relaxed">
+            <div ref={containerRef} className="h-80 overflow-y-auto p-4 font-mono text-sm leading-relaxed">
               {demo.slice(0, visibleCount).map((line, i) => (
                 <motion.div
                   key={i}
