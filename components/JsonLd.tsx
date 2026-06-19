@@ -2,12 +2,12 @@ export default function JsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Inferra",
+    name: "InferraOS",
     applicationCategory: "OperatingSystem",
     operatingSystem: "x86_64",
     description:
       "A ground-up AI-native operating system. Open-source, Wayland-native, with an intelligent intent-routing core.",
-    url: "https://inferra.live",
+    url: "https://samanthaos.org",
     offers: {
       "@type": "Offer",
       price: "0",
@@ -15,7 +15,7 @@ export default function JsonLd() {
     },
     author: {
       "@type": "Organization",
-      name: "Inferra",
+      name: "InferraOS",
     },
   }
 

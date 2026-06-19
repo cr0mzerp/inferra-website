@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, useScroll, useTransform } from "framer-motion"
 
 function Counter({ to, suffix = "", label }: { to: number; suffix?: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null!)
@@ -11,7 +11,7 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
   useEffect(() => {
     if (!inView) return
     let start = 0
-    const duration = 1800
+    const duration = 2000
     const step = 16
     const increment = to / (duration / step)
 
@@ -29,12 +29,32 @@ function Counter({ to, suffix = "", label }: { to: number; suffix?: string; labe
   }, [inView, to])
 
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-4xl font-bold text-white sm:text-5xl tabular-nums">
-        {val.toLocaleString()}{suffix}
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      className="text-center relative group"
+    >
+      <motion.div
+        className="text-4xl font-bold text-white sm:text-5xl tabular-nums"
+        whileHover={{ scale: 1.1, color: "#ff8c00" }}
+        transition={{ type: "spring", stiffness: 300, damping: 10 }}
+      >
+        {val.toLocaleString()}
+        <motion.span
+          className="text-orange"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          {suffix}
+        </motion.span>
+      </motion.div>
+      <div className="mt-1 text-sm text-zinc-500 group-hover:text-zinc-300 transition-colors">
+        {label}
       </div>
-      <div className="mt-1 text-sm text-zinc-500">{label}</div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -46,20 +66,38 @@ const stats = [
 ]
 
 export default function Stats() {
+  const sectionRef = useRef<HTMLDivElement>(null!)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "start center"],
+  })
+
+  const borderGlow = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["rgba(255,107,0,0)", "rgba(255,107,0,0.15)", "rgba(255,107,0,0)"]
+  )
+
   return (
-    <section className="relative border-t border-white/5 py-20">
+    <section ref={sectionRef} className="relative border-t border-white/5 py-20">
+      <motion.div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{ background: borderGlow }}
+      />
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="grid grid-cols-2 gap-8 sm:grid-cols-4"
-        >
-          {stats.map((s) => (
-            <Counter key={s.label} to={s.to} suffix={s.suffix} label={s.label} />
+        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+            >
+              <Counter to={s.to} suffix={s.suffix} label={s.label} />
+            </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

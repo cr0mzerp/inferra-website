@@ -15,7 +15,7 @@ const releases = [
     title: "Initial alpha release",
     changes: [
       { type: "feature" as const, text: "Aura Wayland compositor with KMS/DRM backend" },
-          { type: "feature" as const, text: "Samantha intent routing service (NLP)" },
+          { type: "feature" as const, text: "Inferra intent routing service (NLP)" },
           { type: "feature" as const, text: "WebUI dashboard on port 8080" },
           { type: "feature" as const, text: "Input pipeline with keyboard/mouse support" },
           { type: "feature" as const, text: "systemd-boot UEFI boot" },

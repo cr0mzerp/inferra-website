@@ -2,3 +2,4 @@ node_modules
 .next
 *.local
 out
+.DS_Store

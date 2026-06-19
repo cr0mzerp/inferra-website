@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-deep-950: #07070d;
-  --color-deep-900: #0a0a12;
-  --color-deep-800: #0e0e1a;
-  --color-deep-700: #14142a;
-  --color-accent: #6366f1;
-  --color-accent-light: #818cf8;
-  --color-cyan-neon: #06b6d4;
-  --color-surface: #12122a;
+  --color-dark-950: #0a0a0a;
+  --color-dark-900: #0f0f0f;
+  --color-dark-800: #1a1a1a;
+  --color-dark-700: #252525;
+  --color-orange: #ff6b00;
+  --color-orange-light: #ff8c00;
+  --color-orange-glow: #ffa500;
+  --color-purple-deep: #4B2A7A;
+  --color-purple-light: #7B4FBF;
+  --color-surface: #151515;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
@@ -16,15 +18,39 @@
 @layer base {
   * { @apply border-white/5; }
   body {
-    @apply bg-deep-950 text-zinc-300 antialiased;
+    @apply bg-dark-950 text-zinc-300 antialiased;
     font-family: var(--font-sans);
+  }
+  ::selection {
+    background: rgba(255, 107, 0, 0.3);
+    color: #fff;
   }
 }
 
-@utility text-glow {
-  text-shadow: 0 0 20px var(--color-cyan-neon), 0 0 60px color-mix(in srgb, var(--color-cyan-neon) 30%, transparent);
+@utility text-glow-orange {
+  text-shadow: 0 0 20px var(--color-orange), 0 0 60px color-mix(in srgb, var(--color-orange) 30%, transparent);
 }
 
-@utility glow {
-  box-shadow: 0 0 20px var(--color-accent), 0 0 60px color-mix(in srgb, var(--color-accent) 20%, transparent);
+@utility text-glow-purple {
+  text-shadow: 0 0 20px var(--color-purple-deep), 0 0 60px color-mix(in srgb, var(--color-purple-deep) 30%, transparent);
+}
+
+@utility glow-orange {
+  box-shadow: 0 0 20px var(--color-orange), 0 0 60px color-mix(in srgb, var(--color-orange) 20%, transparent);
+}
+
+@utility glow-purple {
+  box-shadow: 0 0 20px var(--color-purple-deep), 0 0 60px color-mix(in srgb, var(--color-purple-deep) 20%, transparent);
+}
+
+@layer utilities {
+  .bg-halloween {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0a00 30%, #0f0a1a 60%, #0a0a0a 100%);
+  }
+  .bg-halloween-card {
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.05) 0%, rgba(75, 42, 122, 0.05) 100%);
+  }
+  .bg-halloween-glow {
+    background: radial-gradient(ellipse at center, rgba(255, 107, 0, 0.15) 0%, transparent 70%);
+  }
 }

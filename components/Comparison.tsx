@@ -14,7 +14,7 @@ const rows = [
 ]
 
 const os = [
-  { key: "inferra", label: "Inferra" },
+  { key: "inferra", label: "InferraOS" },
   { key: "ubuntu", label: "Ubuntu" },
   { key: "arch", label: "Arch Linux" },
   { key: "chromeos", label: "ChromeOS" },
@@ -23,12 +23,28 @@ const os = [
 function Cell({ value }: { value: boolean | string }) {
   if (typeof value === "boolean") {
     return value ? (
-      <span className="text-emerald-400">✓</span>
+      <motion.span
+        className="text-emerald-400 inline-block"
+        initial={{ scale: 0 }}
+        whileInView={{ scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ type: "spring", stiffness: 500, damping: 15 }}
+      >
+        ✓
+      </motion.span>
     ) : (
       <span className="text-zinc-700">—</span>
     )
   }
   return <span className="text-zinc-300">{value}</span>
+}
+
+const rowVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: (i: number) => ({
+    opacity: 1, x: 0,
+    transition: { delay: i * 0.05, duration: 0.4 },
+  }),
 }
 
 export default function Comparison() {
@@ -42,7 +58,11 @@ export default function Comparison() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-center text-3xl font-bold text-white sm:text-4xl">
-            How does Inferra compare?
+            How does{" "}
+            <span className="bg-gradient-to-r from-orange to-purple-deep bg-clip-text text-transparent">
+              InferraOS
+            </span>{" "}
+            compare?
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-center text-zinc-400">
             Feature comparison with popular operating systems.
@@ -60,7 +80,7 @@ export default function Comparison() {
                   <th
                     key={o.key}
                     className={`pb-3 text-center text-xs font-medium uppercase tracking-wider ${
-                      o.key === "inferra" ? "text-accent" : "text-zinc-600"
+                      o.key === "inferra" ? "text-orange" : "text-zinc-600"
                     }`}
                   >
                     {o.label}
@@ -70,19 +90,29 @@ export default function Comparison() {
             </thead>
             <tbody>
               {rows.map((row, i) => (
-                <tr
+                <motion.tr
                   key={row.feature}
-                  className={`border-b border-white/5 transition-colors hover:bg-white/[0.02] ${
+                  custom={i}
+                  variants={rowVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  className={`border-b border-white/5 transition-colors hover:bg-orange/[0.02] ${
                     i % 2 === 0 ? "bg-white/[0.01]" : ""
                   }`}
                 >
                   <td className="py-3 text-zinc-400">{row.feature}</td>
                   {os.map((o) => (
-                    <td key={o.key} className="py-3 text-center">
+                    <td
+                      key={o.key}
+                      className={`py-3 text-center ${
+                        o.key === "inferra" ? "bg-orange/[0.02]" : ""
+                      }`}
+                    >
                       <Cell value={row[o.key as keyof typeof row] as boolean | string} />
                     </td>
                   ))}
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           </table>
